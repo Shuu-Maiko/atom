@@ -1,0 +1,22 @@
+TODO - Geopolitics Analysis Tool
+
+1. 3D Map with CesiumJS (Done)
+2. Satellite tracking (Done)
+3. Aircraft tracking (Done)
+4. Place info on click (Done)
+5. News by location (Done)
+6. Dark theme UI (Done)
+7. Toggle on/off (Done)
+8. Ship/Vessel tracking
+9. More satellite groups
+10. Search functionality
+11. Custom markers
+
+Additional Analysis Features:
+- Military aircraft identification
+- Flight path history
+- Vessel routes
+- Port activity
+- Heatmap of activity
+- Country stats (aircraft count)
+- Recent incidents

@@ -16,11 +16,18 @@ export function useAircraftPositions() {
   const [positions, setPositions] = useState<AircraftPosition[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const cachedPositions = useRef<AircraftPosition[]>([]);
 
   useEffect(() => {
     const updatePositions = async () => {
       try {
         const data = await fetchAircraft();
+        
+        if (data.aircraft.length === 0) {
+          console.warn('Aircraft API rate limited, using cached data');
+          setPositions(cachedPositions.current);
+          return;
+        }
         
         const newPositions: AircraftPosition[] = data.aircraft
           .filter(a => a.latitude && a.longitude && !a.onGround)
@@ -29,16 +36,19 @@ export function useAircraftPositions() {
             icao24: a.icao24,
             callSign: a.callSign,
             country: a.country,
-            position: Cartesian3.fromDegrees(a.longitude, a.latitude, a.altitude),
+            position: Cartesian3.fromDegrees(a.longitude, a.latitude, a.altitude || 10000),
             altitude: a.altitude,
             velocity: a.velocity,
             heading: a.heading,
           }));
         
+        cachedPositions.current = newPositions;
+        console.log('Aircraft fetched:', newPositions.length, 'total from API:', data.aircraft.length);
         setPositions(newPositions);
         setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch');
+        console.warn('Aircraft fetch error (using cached):', err);
+        setPositions(cachedPositions.current);
       } finally {
         setLoading(false);
       }
@@ -46,7 +56,7 @@ export function useAircraftPositions() {
 
     updatePositions();
 
-    const interval = setInterval(updatePositions, 10000);
+    const interval = setInterval(updatePositions, 120000);
 
     return () => clearInterval(interval);
   }, []);

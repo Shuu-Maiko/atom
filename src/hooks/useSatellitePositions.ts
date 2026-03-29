@@ -4,13 +4,14 @@ import { twoline2satrec, propagate, gstime, eciToGeodetic } from 'satellite.js';
 import { Cartesian3 } from 'cesium';
 
 export interface SatellitePosition {
+  id: string;
   name: string;
   position: ReturnType<typeof Cartesian3.fromRadians>;
 }
 
-export function useSatellitePositions() {
+export function useSatellitePositions(enabled: boolean = false) {
   const [positions, setPositions] = useState<SatellitePosition[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!enabled);
   const [error, setError] = useState<string | null>(null);
   const satellitesRef = useRef<TLESatellite[]>([]);
 
@@ -38,7 +39,8 @@ export function useSatellitePositions() {
             (gd.height || 0) * 1000
           );
           
-          newPositions.push({ name: sat.name, position: cartesian });
+          const satId = sat.line1.slice(2, 7).trim() + sat.line1.slice(9, 11).trim();
+          newPositions.push({ id: satId, name: sat.name, position: cartesian });
         }
       } catch (e) {
         console.error('Error processing', sat.name, e);
@@ -49,21 +51,29 @@ export function useSatellitePositions() {
   });
 
   useEffect(() => {
-    fetchActiveSatellites()
-      .then(data => {
+    if (!enabled) return;
+
+    const init = async () => {
+      try {
+        const data = await fetchActiveSatellites();
         satellitesRef.current = data.satellites;
-      })
-      .catch(err => setError(err instanceof Error ? err.message : 'Failed to fetch'))
-      .finally(() => setLoading(false));
+        updatePositions.current();
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to fetch');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    updatePositions.current();
+    init();
 
-    const interval = setInterval(() => {
-      fetchActiveSatellites()
-        .then(data => {
-          satellitesRef.current = data.satellites;
-        })
-        .catch(err => setError(err instanceof Error ? err.message : 'Failed to fetch'));
+    const interval = setInterval(async () => {
+      try {
+        const data = await fetchActiveSatellites();
+        satellitesRef.current = data.satellites;
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to fetch');
+      }
     }, 2 * 60 * 60 * 1000);
 
     const tick = setInterval(updatePositions.current, 1000);
@@ -72,7 +82,7 @@ export function useSatellitePositions() {
       clearInterval(interval);
       clearInterval(tick);
     };
-  }, []);
+  }, [enabled]);
 
   return { positions, loading, error };
 }

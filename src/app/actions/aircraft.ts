@@ -16,27 +16,32 @@ export interface Aircraft {
 export interface AircraftData {
   aircraft: Aircraft[];
   fetchedAt: string;
+  source: string;
 }
 
 interface OpenSkyState {
-  0: string;  // icao24
-  1: string;  // callsign
-  2: string;  // country
-  3: number;  // time_position
-  4: number;  // time_velocity
-  5: number;  // longitude
-  6: number;  // latitude
-  7: number;  // altitude
-  8: boolean; // on_ground
-  9: number;  // velocity
-  10: number; // heading
-  11: number; // vertical_rate
+  0: string;
+  1: string;
+  2: string;
+  3: number;
+  4: number;
+  5: number;
+  6: number;
+  7: number;
+  8: boolean;
+  9: number;
+  10: number;
+  11: number;
 }
 
 async function fetchFromOpenSky(): Promise<AircraftData> {
   const res = await fetch('https://opensky-network.org/api/states/all', {
     cache: 'no-store',
   });
+
+  if (res.status === 429) {
+    return { aircraft: [], fetchedAt: new Date().toISOString(), source: 'opensky-rate-limited' };
+  }
 
   if (!res.ok) {
     throw new Error(`Failed to fetch: ${res.status}`);
@@ -63,6 +68,7 @@ async function fetchFromOpenSky(): Promise<AircraftData> {
   return {
     aircraft,
     fetchedAt: new Date().toISOString(),
+    source: 'opensky',
   };
 }
 
