@@ -69,7 +69,6 @@ const PlaceInfo = ({ place, onClose }: Props) => {
       const data = await getNewsByCountry(country);
       setNews(data.articles || []);
     } catch (err) {
-      console.error('Failed to fetch news:', err);
     } finally {
       setNewsLoading(false);
     }

@@ -23,7 +23,6 @@ export function useSatellitePositions(enabled: boolean = false) {
       try {
         const satrec = twoline2satrec(sat.line1, sat.line2);
         if (satrec.error) {
-          console.warn('TLE error for', sat.name, satrec.error);
           continue;
         }
         
@@ -43,7 +42,6 @@ export function useSatellitePositions(enabled: boolean = false) {
           newPositions.push({ id: satId, name: sat.name, position: cartesian });
         }
       } catch (e) {
-        console.error('Error processing', sat.name, e);
       }
     }
 

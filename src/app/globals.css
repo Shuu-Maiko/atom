@@ -4,7 +4,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Hide Cesium Ion credit banner — we use OSM only, no Ion services */
 .cesium-credit-logoContainer,
 .cesium-credit-expand-link,
 .cesium-credit-textContainer,

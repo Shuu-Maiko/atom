@@ -24,7 +24,6 @@ export function useAircraftPositions() {
         const data = await fetchAircraft();
         
         if (data.aircraft.length === 0) {
-          console.warn('Aircraft API rate limited, using cached data');
           setPositions(cachedPositions.current);
           return;
         }
@@ -43,11 +42,9 @@ export function useAircraftPositions() {
           }));
         
         cachedPositions.current = newPositions;
-        console.log('Aircraft fetched:', newPositions.length, 'total from API:', data.aircraft.length);
         setPositions(newPositions);
         setError(null);
       } catch (err) {
-        console.warn('Aircraft fetch error (using cached):', err);
         setPositions(cachedPositions.current);
       } finally {
         setLoading(false);

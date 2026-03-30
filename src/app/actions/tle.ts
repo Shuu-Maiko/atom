@@ -1,5 +1,7 @@
 'use server';
 
+import { SatelliteGroup, SATELLITE_GROUPS } from '@/lib/satellite-groups';
+
 export interface TLESatellite {
   name: string;
   line1: string;
@@ -12,7 +14,10 @@ export interface TLEData {
   source: string;
 }
 
-const GROUPS = ['visual', 'iridium-NEXT', 'amateur', 'starlink', 'planet', 'spire', 'globalstar', 'orbcomm', 'leosat', 'gps-ops', 'glo-ops', 'galileo', 'beidou', 'nwslot', 'dmc', 'science', 'tdrss', 'sbas', 'weather', 'earth-observation', 'communications'];
+export type { SatelliteGroup };
+export { SATELLITE_GROUPS };
+
+const GROUPS: SatelliteGroup[] = SATELLITE_GROUPS.map(g => g.id);
 
 async function fetchTLEFromCelestrak(): Promise<string> {
   const results: string[] = [];

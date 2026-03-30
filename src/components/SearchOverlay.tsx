@@ -31,7 +31,6 @@ export default function SearchOverlay({ onSearch, onSelect, onClose }: Props) {
       setResults(data);
       setIsOpen(true);
     } catch (err) {
-      console.error('Search failed:', err);
     } finally {
       setLoading(false);
     }
