@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
   turbopack: {
     resolveAlias: {
       cesium: 'cesium/Source/Cesium',
+      resium: 'resium/src',
     },
   },
   webpack: (config, { isServer }) => {

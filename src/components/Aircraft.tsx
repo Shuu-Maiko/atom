@@ -1,11 +1,11 @@
 'use client';
 
 import { useAircraftPositions } from '@/hooks/useAircraftPositions';
-import { Cartesian2, Color } from 'cesium';
-import { Entity, PointGraphics, LabelGraphics } from 'resium';
+import { Math as CesiumMath, Cartesian2, Color } from 'cesium';
+import { Entity, BillboardGraphics, LabelGraphics } from 'resium';
 
 export const Aircraft = () => {
-  const { positions } = useAircraftPositions();
+  const { positions } = useAircraftPositions(true);
 
   return (
     <>
@@ -27,7 +27,14 @@ export const Aircraft = () => {
               </div>
             `}
           >
-            <PointGraphics pixelSize={6} color={Color.YELLOW} />
+            <BillboardGraphics 
+              image="/icons/aircraft.svg" 
+              width={24} 
+              height={24} 
+              color={Color.YELLOW} 
+              rotation={-CesiumMath.toRadians(plane.heading || 0)} 
+              disableDepthTestDistance={Number.POSITIVE_INFINITY}
+            />
             <LabelGraphics
               text={plane.callSign}
               font="10px sans-serif"
@@ -35,6 +42,7 @@ export const Aircraft = () => {
               fillColor={Color.WHITE}
               showBackground
               backgroundColor={Color.BLACK.withAlpha(0.5)}
+              disableDepthTestDistance={Number.POSITIVE_INFINITY}
             />
           </Entity>
         );

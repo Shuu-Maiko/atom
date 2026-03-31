@@ -7,10 +7,10 @@ TODO - Geopolitics Analysis Tool
 5. News by location (Done)
 6. Dark theme UI (Done)
 7. Toggle on/off (Done)
-8. Ship/Vessel tracking
-9. More satellite groups
-10. Search functionality
-11. Custom markers
+8. Ship/Vessel tracking (Done)
+9. More satellite groups (Done)
+10. Search functionality (Done)
+11. Custom markers (Done)
 
 Additional Analysis Features:
 - Military aircraft identification
@@ -20,3 +20,18 @@ Additional Analysis Features:
 - Heatmap of activity
 - Country stats (aircraft count)
 - Recent incidents
+
+**New High-Impact Geopolitical Features**
+
+- Dynamic Contextual Layer Manager: Implement toggleable, stylable overlays for EEZs, maritime choke points, and disputed borders (Done)
+- Critical Infrastructure Overlays: Add permanent vector layers for oil/gas pipelines, undersea cables, and major trade corridors to track economic chokepoints.
+- Military Installations Intelligence Layer: Create clickable 3D icons for global bases and fortifications with expandable data cards for troop and activity stats.
+- Full Temporal Time-Scrubbing Engine: Develop a unified historical playback slider to synchronize all moving entities and layer states for incident reconstruction.
+- Signal & Sensor Domain Visualization: Visualize 3D volumetric cones for radar coverage, jamming ranges, and satellite footprints over the globe.
+- Geotagged Multi-Source News & OSINT Engine: Integrate map-pinned news feeds and OSINT sources at exact coordinates for real-time narrative comparison. (Done)
+- Chokepoint & Strategic Node Analytics Dashboard: Build a side-panel for selecting ports or chokepoints to view live traffic density, dwell-times, and anomaly alerts.
+- Collaborative Annotation & Workspace Suite: Implement shared views, drawing tools, and one-click PDF/PPT export for team-based intelligence reporting.
+- Viewshed & Line-of-Sight Tactical Tools: Leverage 3D terrain analysis to calculate visibility from bases and identify terrain masking for operational planning.
+- Custom Scenario Builder: Create a drag-and-drop "what-if" mode to simulate blockades, reposition assets, and model hypothetical impact scenarios.
+- Economic Influence & Investment Heatmap Layer: Add dynamic overlays for FDI hotspots, resource concessions, and sanctions-affected zones to track soft-power.
+- Advanced Export & Integration API: Provide one-click exports for GeoJSON, KML, and animated MP4 with API endpoints for external dashboard integration.

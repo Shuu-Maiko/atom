@@ -12,13 +12,15 @@ export interface AircraftPosition {
   heading: number;
 }
 
-export function useAircraftPositions() {
+export function useAircraftPositions(enabled: boolean = false) {
   const [positions, setPositions] = useState<AircraftPosition[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const cachedPositions = useRef<AircraftPosition[]>([]);
 
   useEffect(() => {
+    if (!enabled) return;
+
     const updatePositions = async () => {
       try {
         const data = await fetchAircraft();
@@ -56,7 +58,7 @@ export function useAircraftPositions() {
     const interval = setInterval(updatePositions, 120000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [enabled]);
 
   return { positions, loading, error };
 }

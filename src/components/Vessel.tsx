@@ -1,9 +1,10 @@
 'use client';
 
-import { useVesselPositions, isMilitaryVessel, getVesselStyle } from '@/hooks/useVesselPositions';
-import type { Vessel as VesselType } from '@/lib/vessel-data';
-import { Cartesian2, Color } from 'cesium';
-import { Entity, PointGraphics, LabelGraphics, PolylineGraphics } from 'resium';
+import { useVesselPositions } from '@/hooks/useVesselPositions';
+import { isMilitaryVessel, getVesselStyle } from '@/lib/vessel-utils';
+import type { VesselPosition as VesselType } from '@/lib/vessel-utils';
+import { Cartesian2, Cartesian3, Color, Math as CesiumMath } from 'cesium';
+import { Entity, BillboardGraphics, LabelGraphics, PolylineGraphics } from 'resium';
 import { useMemo } from 'react';
 
 interface VesselProps {
@@ -29,10 +30,9 @@ export default function Vessel({ showRoutes = false, filterMilitary = false }: V
         
         const courseRad = (vessel.course * Math.PI) / 180;
         const routeLength = vessel.speed * 0.01;
-        const endLat = vessel.position ? 
-          (vessel.position as any).y / 10000000 + routeLength * Math.cos(courseRad) : 0;
-        const endLon = vessel.position ? 
-          (vessel.position as any).x / 10000000 + routeLength * Math.sin(courseRad) / Math.cos(endLat * Math.PI / 180) : 0;
+        const endLat = vessel.latitude + routeLength * Math.cos(courseRad);
+        const endLon = vessel.longitude + (routeLength * Math.sin(courseRad)) / Math.cos(endLat * Math.PI / 180);
+        const endPos = Cartesian3.fromDegrees(endLon, endLat, 100);
         
         return (
           <Entity 
@@ -56,7 +56,14 @@ export default function Vessel({ showRoutes = false, filterMilitary = false }: V
               </div>
             `}
           >
-            <PointGraphics pixelSize={style.size} color={color} />
+            <BillboardGraphics 
+              image="/icons/vessel.svg" 
+              width={24} 
+              height={24} 
+              color={color} 
+              rotation={-CesiumMath.toRadians(vessel.course || 0)} 
+              disableDepthTestDistance={Number.POSITIVE_INFINITY}
+            />
             <LabelGraphics
               text={vessel.name}
               font="10px sans-serif"
@@ -64,10 +71,11 @@ export default function Vessel({ showRoutes = false, filterMilitary = false }: V
               fillColor={Color.WHITE}
               showBackground
               backgroundColor={Color.BLACK.withAlpha(0.6)}
+              disableDepthTestDistance={Number.POSITIVE_INFINITY}
             />
             {showRoutes && vessel.speed > 0 && (
               <PolylineGraphics
-                positions={[vessel.position, vessel.position]}
+                positions={[vessel.position, endPos]}
                 width={1}
                 material={color.withAlpha(0.5)}
               />
